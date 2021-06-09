@@ -3,7 +3,7 @@ using FridgePull.InfluxDb;
 using FridgePull.InfluxDb.Models;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Api.Controllers
+namespace FridgePull.Api.Controllers
 {
     [Route("[controller]")]
     [ApiController]
