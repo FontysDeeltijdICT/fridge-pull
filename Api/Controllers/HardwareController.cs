@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using FridgePull.Api.Utilities.Mappers;
 using FridgePull.InfluxDb;
 using FridgePull.InfluxDb.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -22,12 +23,14 @@ namespace FridgePull.Api.Controllers
         {
             var measurements = _measurementService.GetLastMeasurement(macAddress);
 
-            if (measurements == null || !measurements.Any())
+            var measurementDtos = MeasurementMapper.ToDto(measurements);
+
+            if (measurementDtos == null || !measurementDtos.Any())
             {
                 return NotFound();
             }
 
-            return Ok(measurements);
+            return Ok(measurementDtos);
         }
     }
 }
