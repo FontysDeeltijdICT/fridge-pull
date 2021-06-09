@@ -1,3 +1,6 @@
+using FridgePull.InfluxDb;
+using FridgePull.InfluxDb.Options;
+using InfluxDB.Client;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -19,6 +22,13 @@ namespace Api
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<InfluxDbOptions>(Configuration.GetSection(InfluxDbOptions.InfluxDb));
+            services.Configure<BierCoolOptions>(Configuration.GetSection(BierCoolOptions.BierCool));
+            
+            services.AddScoped(_ => InfluxDBClientFactory.Create(Configuration["InfluxDb:Host"], Configuration["InfluxDb:Token"]));
+            services.AddScoped<MeasurementRepository>();
+            services.AddScoped<MeasurementService>();
+            
             services.AddControllers();
         }
 
