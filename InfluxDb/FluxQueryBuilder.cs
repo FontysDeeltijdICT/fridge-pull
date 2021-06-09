@@ -34,6 +34,13 @@
             
             return this;
         }
+        
+        public FluxQueryBuilder AddGroup(string column)
+        {
+            _fluxQuery += $"|> group(columns: [\"{column}\"])";
+            
+            return this;
+        }
 
         public FluxQueryBuilder Last()
         {

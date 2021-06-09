@@ -35,6 +35,7 @@ namespace FridgePull.InfluxDb
                 .AddFilter("_measurement", _bierCoolOptions.Measurement)
                 .AddFilter("device", macAddress)
                 .AddFilter("version", _bierCoolOptions.Version)
+                .AddGroup("sensor")
                 .Last()
                 .GetResult();
 
