@@ -25,7 +25,7 @@ namespace FridgePull.Api
             services.Configure<InfluxDbOptions>(Configuration.GetSection(InfluxDbOptions.InfluxDb));
             services.Configure<BierCoolOptions>(Configuration.GetSection(BierCoolOptions.BierCool));
             
-            services.AddScoped(_ => InfluxDBClientFactory.Create(Configuration["InfluxDb:Host"], Configuration["InfluxDb:Token"]));
+            services.AddTransient(_ => InfluxDBClientFactory.Create(Configuration["InfluxDb:Host"], Configuration["InfluxDb:Token"]));
             services.AddScoped<MeasurementRepository>();
             services.AddScoped<MeasurementService>();
             
