@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using FridgePull.InfluxDb;
 using FridgePull.InfluxDb.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +22,7 @@ namespace FridgePull.Api.Controllers
         {
             var measurements = _measurementService.GetLastMeasurement(macAddress);
 
-            if (measurements == null)
+            if (measurements == null || !measurements.Any())
             {
                 return NotFound();
             }
