@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Xml;
 using FridgePull.InfluxDb.Models;
+using FridgePull.InfluxDb.Options;
 using InfluxDB.Client;
 using Microsoft.Extensions.Options;
 

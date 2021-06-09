@@ -1,4 +1,4 @@
-﻿namespace FridgePull.InfluxDb
+﻿namespace FridgePull.InfluxDb.Options
 {
     public class InfluxDbOptions
     {
