@@ -7,7 +7,7 @@ namespace FridgePull.Api.Utilities.Mappers
     {
         public static Sensor ToDto(Measurement measurement) => new()
         {
-            Id = measurement.Id,
+            Id = measurement.Sensor,
             Temperature = measurement.Temperature,
             Presence = measurement.Presence
         };
