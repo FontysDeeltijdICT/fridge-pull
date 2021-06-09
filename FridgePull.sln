@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InfluxDb", "InfluxDb\Influx
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "Api\Api.csproj", "{6BBD1E11-F3AD-48E9-8DFD-8AA1FDF57296}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests", "IntegrationTests\IntegrationTests.csproj", "{6A67D8A5-4CFD-4ADA-AB28-18F1002CB359}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{6BBD1E11-F3AD-48E9-8DFD-8AA1FDF57296}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6BBD1E11-F3AD-48E9-8DFD-8AA1FDF57296}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6BBD1E11-F3AD-48E9-8DFD-8AA1FDF57296}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6A67D8A5-4CFD-4ADA-AB28-18F1002CB359}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6A67D8A5-4CFD-4ADA-AB28-18F1002CB359}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6A67D8A5-4CFD-4ADA-AB28-18F1002CB359}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6A67D8A5-4CFD-4ADA-AB28-18F1002CB359}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
