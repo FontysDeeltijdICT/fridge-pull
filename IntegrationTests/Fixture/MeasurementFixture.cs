@@ -6,20 +6,19 @@ using InfluxDB.Client;
 using InfluxDB.Client.Api.Domain;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
-using Xunit;
 
 namespace FridgePull.IntegrationTests.Fixture
 {
-    public class MeasurementFixture : IClassFixture<WebApplicationFactory<Startup>>, IDisposable
+    public class MeasurementFixture : IDisposable
     {
-        protected readonly WebApplicationFactory<Startup> Factory;
-        protected List<Measurement> Measurements;
+        public readonly WebApplicationFactory<Startup> Factory;
+        public List<Measurement> Measurements;
         
         private readonly InfluxDBClient _influxDbClient;
 
-        protected MeasurementFixture(WebApplicationFactory<Startup> factory)
+        public MeasurementFixture()
         {
-            Factory = factory;
+            Factory = new WebApplicationFactory<Startup>();
 
             _influxDbClient = Factory.Services.GetService<InfluxDBClient>();
             
@@ -32,6 +31,7 @@ namespace FridgePull.IntegrationTests.Fixture
             
             var writeApi = _influxDbClient.GetWriteApiAsync();
 
+            // TODO: Extract bucket/org
             await writeApi.WriteMeasurementsAsync("biercool", "biercool", WritePrecision.S, Measurements);
         }
 
@@ -131,6 +131,7 @@ namespace FridgePull.IntegrationTests.Fixture
 
         public void Dispose()
         {
+            // TODO: Extract bucket/org
             _influxDbClient.GetDeleteApi()
                 .Delete(DateTime.UtcNow.AddYears(-1), DateTime.UtcNow, "", "biercool", "biercool");
             _influxDbClient?.Dispose();

@@ -2,22 +2,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using FridgePull.Api;
 using FridgePull.IntegrationTests.Fixture;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Newtonsoft.Json;
 using Xunit;
 
 namespace FridgePull.IntegrationTests
 {
-    public class MeasurementTests : MeasurementFixture
+    public class MeasurementTests : IClassFixture<MeasurementFixture>
     {
-        public MeasurementTests(WebApplicationFactory<Startup> factory) : base(factory) {}
+        private readonly MeasurementFixture _fixture;
+
+        public MeasurementTests(MeasurementFixture fixture)
+        {
+            _fixture = fixture;
+        }
         
         [Fact]
         public async Task GetLatestMeasurements_NonExistentMacAddress_ShouldReturnNotFound()
         {
-            var client = Factory.CreateClient();
+            var client = _fixture.Factory.CreateClient();
 
             var response = await client.GetAsync("/hardware/doesnotexist");
             
@@ -27,8 +30,8 @@ namespace FridgePull.IntegrationTests
         [Fact]
         public async Task GetLatestMeasurements_ExistentMacAddress_ShouldReturnOK()
         {
-            var existentMacAddress = Measurements.First().Device;
-            var client = Factory.CreateClient();
+            var existentMacAddress = _fixture.Measurements.First().Device;
+            var client = _fixture.Factory.CreateClient();
 
             var response = await client.GetAsync($"/hardware/{existentMacAddress}");
 
@@ -38,11 +41,11 @@ namespace FridgePull.IntegrationTests
         [Fact]
         public async Task GetLastestMeasurements_ExistentMacAddress_ShouldReturnCorrectData()
         {
-            var firstMeasurement = Measurements.First();
+            var firstMeasurement = _fixture.Measurements.First();
             var firstMeasurementMacAddress = firstMeasurement.Device;
             var firstMeasurementTimestamp = firstMeasurement.Time;
-            var measurementsFromMacAddress = Measurements.Where(m => m.Device == firstMeasurementMacAddress && m.Time == firstMeasurementTimestamp).ToArray();
-            var client = Factory.CreateClient();
+            var measurementsFromMacAddress = _fixture.Measurements.Where(m => m.Device == firstMeasurementMacAddress && m.Time == firstMeasurementTimestamp).ToArray();
+            var client = _fixture.Factory.CreateClient();
             
             var response = await client.GetAsync($"/hardware/{firstMeasurementMacAddress}");
             var measurementsJson = await response.Content.ReadAsStringAsync();
