@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using FridgePull.Api;
 using FridgePull.InfluxDb.Models;
+using FridgePull.InfluxDb.Options;
 using InfluxDB.Client;
 using InfluxDB.Client.Api.Domain;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace FridgePull.IntegrationTests.Fixture
 {
@@ -15,12 +17,16 @@ namespace FridgePull.IntegrationTests.Fixture
         public List<Measurement> Measurements;
         
         private readonly InfluxDBClient _influxDbClient;
+        private readonly InfluxDbOptions _influxDbOptions;
+        private readonly BierCoolOptions _bierCoolOptions;
 
         public MeasurementFixture()
         {
             Factory = new WebApplicationFactory<Startup>();
 
             _influxDbClient = Factory.Services.GetService<InfluxDBClient>();
+            _influxDbOptions = Factory.Services.GetService<IOptions<InfluxDbOptions>>().Value;
+            _bierCoolOptions = Factory.Services.GetService<IOptions<BierCoolOptions>>().Value;
             
             SeedInfluxDb();
         }
@@ -31,8 +37,7 @@ namespace FridgePull.IntegrationTests.Fixture
             
             var writeApi = _influxDbClient.GetWriteApiAsync();
 
-            // TODO: Extract bucket/org
-            await writeApi.WriteMeasurementsAsync("biercool", "biercool", WritePrecision.S, Measurements);
+            await writeApi.WriteMeasurementsAsync(_influxDbOptions.Bucket, _influxDbOptions.Organization, WritePrecision.S, Measurements);
         }
 
         private void CreateMeasurementsToSeed()
@@ -52,7 +57,7 @@ namespace FridgePull.IntegrationTests.Fixture
                     Presence = true,
                     Temperature = 7.2,
                     Time = dateTimeNow,
-                    Version = "1"
+                    Version = _bierCoolOptions.Version
                 },
                 new()
                 {
@@ -61,7 +66,7 @@ namespace FridgePull.IntegrationTests.Fixture
                     Presence = false,
                     Temperature = 5,
                     Time = dateTimeNow,
-                    Version = "1"
+                    Version = _bierCoolOptions.Version
                 },
                 new()
                 {
@@ -70,7 +75,7 @@ namespace FridgePull.IntegrationTests.Fixture
                     Presence = true,
                     Temperature = 11.2,
                     Time = dateTimeNow,
-                    Version = "1"
+                    Version = _bierCoolOptions.Version
                 },
                 new()
                 {
@@ -79,7 +84,7 @@ namespace FridgePull.IntegrationTests.Fixture
                     Presence = false,
                     Temperature = 7.4,
                     Time = dateTimeEarlier,
-                    Version = "1"
+                    Version = _bierCoolOptions.Version
                 },
                 new()
                 {
@@ -88,7 +93,7 @@ namespace FridgePull.IntegrationTests.Fixture
                     Presence = false,
                     Temperature = 5.2,
                     Time = dateTimeEarlier,
-                    Version = "1"
+                    Version = _bierCoolOptions.Version
                 },
                 new()
                 {
@@ -97,7 +102,7 @@ namespace FridgePull.IntegrationTests.Fixture
                     Presence = true,
                     Temperature = 11.6,
                     Time = dateTimeEarlier,
-                    Version = "1"
+                    Version = _bierCoolOptions.Version
                 },
                 new()
                 {
@@ -106,7 +111,7 @@ namespace FridgePull.IntegrationTests.Fixture
                     Presence = false,
                     Temperature = 5.3,
                     Time = dateTimeNow,
-                    Version = "1"
+                    Version = _bierCoolOptions.Version
                 },
                 new()
                 {
@@ -115,7 +120,7 @@ namespace FridgePull.IntegrationTests.Fixture
                     Presence = false,
                     Temperature = 5.0,
                     Time = dateTimeNow,
-                    Version = "1"
+                    Version = _bierCoolOptions.Version
                 },
                 new()
                 {
@@ -124,16 +129,15 @@ namespace FridgePull.IntegrationTests.Fixture
                     Presence = false,
                     Temperature = 5.1,
                     Time = dateTimeNow,
-                    Version = "1"
+                    Version = _bierCoolOptions.Version
                 }
             };
         }
 
         public void Dispose()
         {
-            // TODO: Extract bucket/org
             _influxDbClient.GetDeleteApi()
-                .Delete(DateTime.UtcNow.AddYears(-1), DateTime.UtcNow, "", "biercool", "biercool");
+                .Delete(DateTime.UtcNow.AddYears(-1), DateTime.UtcNow, "", _influxDbOptions.Bucket, _influxDbOptions.Organization);
             _influxDbClient?.Dispose();
         }
     }
