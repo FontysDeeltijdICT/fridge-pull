@@ -46,7 +46,7 @@ namespace FridgePull.IntegrationTests
             var firstMeasurementTimestamp = firstMeasurement.Time;
             var measurementsFromMacAddress = _fixture.Measurements.Where(m => m.Device == firstMeasurementMacAddress && m.Time == firstMeasurementTimestamp).ToArray();
             var client = _fixture.Factory.CreateClient();
-            
+
             var response = await client.GetAsync($"/hardware/{firstMeasurementMacAddress}");
             var measurementsJson = await response.Content.ReadAsStringAsync();
             var measurements = JsonConvert.DeserializeObject<List<MeasurementJson>>(measurementsJson);
@@ -54,12 +54,12 @@ namespace FridgePull.IntegrationTests
             Assert.Single(measurements);
             Assert.Equal(measurementsFromMacAddress.Length, measurements.Single().sensors.Count);
 
-            foreach (var sensor in measurements.Single().sensors)
+            foreach (var expectedMeasurement in measurementsFromMacAddress)
             {
-                var expectedSensor = measurementsFromMacAddress.Single(m => m.Sensor == sensor.Id);
-                
-                Assert.Equal(expectedSensor.Temperature, sensor.Temperature);
-                Assert.Equal(expectedSensor.Presence, sensor.Presence);
+                var actualMeasurement = measurements.Single().sensors.Single(m => m.Id == expectedMeasurement.Sensor);
+               
+                Assert.Equal(expectedMeasurement.Temperature, actualMeasurement.Temperature);
+                Assert.Equal(expectedMeasurement.Presence, actualMeasurement.Presence);
             }
         }
     }
