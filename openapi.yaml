@@ -8,7 +8,7 @@ info:
 paths:
   /hardware/{macAddress}:
     get:
-      summary: Get latest measurement (max. 30 days) for MAC address
+      summary: Get measurements for MAC address with specified limits
       tags:
         - Hardware
       parameters:
@@ -18,6 +18,42 @@ paths:
           required: true
           schema:
             type: string
+        - name: from
+          description: DateTime (ISO 8601-formatted), defaults to 30 days ago
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: to
+          description: DateTime (ISO 8601-formatted)
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: limit
+          description: Maximum amount of entries to retrieve
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 50
+            default: 1
+        - name: offset
+          description: Number of entries to skip
+          in: query
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+            default: 0
+        - name: interval
+          description: Minimum amount of seconds between each entry
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 0
       responses:
         '200':
           description: OK
@@ -27,6 +63,10 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/hardware'
+        '401':
+          $ref: '#/components/responses/401'
+        '403':
+          $ref: '#/components/responses/403'
         '404':
           $ref: '#/components/responses/404'
 
@@ -67,5 +107,17 @@ components:
         temperature: 7.2
         presence: true
   responses:
+    401:
+      description: Access token missing or invalid
+    403:
+      description: Not authorized to access this resource
     404:
       description: No measurements found
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: []
