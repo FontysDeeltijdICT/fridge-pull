@@ -1,0 +1,71 @@
+openapi: 3.0.0
+
+info:
+  title: Fridge pull
+  description: Get temperature and presence data from database
+  version: 1.0.0
+
+paths:
+  /hardware/{macAddress}:
+    get:
+      summary: Get latest measurement (max. 30 days) for MAC address
+      tags:
+        - Hardware
+      parameters:
+        - name: macAddress
+          description: MAC address of module
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/hardware'
+        '404':
+          $ref: '#/components/responses/404'
+
+components:
+  schemas:
+    hardware:
+      type: object
+      properties:
+        measuredAt:
+          type: string
+        sensors:
+          type: array
+          items:
+            $ref: '#/components/schemas/sensor'
+      example:
+        measuredAt: '2021-03-29T21:33:12+02:00'
+        sensors:
+          - id: 1
+            temperature: 7.2
+            presence: true
+          - id: 2
+            temperature: 6.8
+            presence: false
+          - id: 3
+            temperature: 12.6
+            presence: true
+    sensor:
+      type: object
+      properties:
+        id:
+          type: integer
+        temperature:
+          type: number
+        presence:
+          type: boolean
+      example:
+        id: 1
+        temperature: 7.2
+        presence: true
+  responses:
+    404:
+      description: No measurements found
